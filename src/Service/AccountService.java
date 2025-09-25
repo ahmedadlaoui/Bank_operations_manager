@@ -15,7 +15,7 @@ public class AccountService {
     private final Scanner input = new Scanner(System.in);
     private final InMemoryAccountRepository accountRepo = InMemoryAccountRepository.getInstance();
 
-    public void AddAccount(User user){
+    public void AddAccount(User user) {
         Client client = (Client) user;
         System.out.print("Enter account Type (Current, Savings or Term deposit) :");
         String AccountTypeInput = input.nextLine().toUpperCase();
@@ -39,13 +39,13 @@ public class AccountService {
         System.out.println("Client       : " + NewAccount.getClient().getFirstName() + " " + NewAccount.getClient().getLastName());
     }
 
-    public void DisplayAccountsByClientID(User user){
+    public void DisplayAccountsByClientID(User user) {
         Client client = (Client) user;
         UUID ClientID = client.getId();
-        List<Account>  ClientAccounts = this.accountRepo.FindByClientID(ClientID);
-        if(ClientAccounts.isEmpty()){
+        List<Account> ClientAccounts = this.accountRepo.FindByClientID(ClientID);
+        if (ClientAccounts.isEmpty()) {
             System.out.println("No client accounts have been created.");
-        }else{
+        } else {
             System.out.println();
             System.out.println("=== Your Accounts ===");
             for (Account account : ClientAccounts) {
@@ -56,6 +56,44 @@ public class AccountService {
             }
         }
         System.out.println("------------------------------");
+    }
+
+    public void CalculateTotals(User user) {
+        if (!(user instanceof Client)) {
+            System.out.println("⚠️ Only clients have balances.");
+            return;
+        }
+
+        Client client = (Client) user;
+        Double totalCurrentBalance = 0.0;
+        Double totalWithdrawal = 0.0;
+        Double totalLongTermDeposit = 0.0;
+        Double grandTotal = 0.0;
+
+        List<Account> AllAccounts = this.accountRepo.FindByClientID(client.getId());
+
+        for (Account account : AllAccounts) {
+            switch (account.getType()) {
+                case CURRENT:
+                    totalCurrentBalance += account.getBalance();
+                    break;
+                case SAVINGS:
+                    totalWithdrawal += account.getBalance();
+                    break;
+                case TERM_DEPOSIT:
+                    totalLongTermDeposit += account.getBalance();
+                    break;
+            }
+            grandTotal += account.getBalance();
+        }
+
+        System.out.println();
+        System.out.println("=== Balance Summary for " + client.getFirstName() + " " + client.getLastName() + " ===");
+        System.out.println("Total in Current Accounts     : " + totalCurrentBalance);
+        System.out.println("Total in Savings Accounts     : " + totalWithdrawal);
+        System.out.println("Total in Long-Term Deposits   : " + totalLongTermDeposit);
+        System.out.println("---------------------------------------");
+        System.out.println("Grand Total Across All Accounts: " + grandTotal);
     }
 
 }

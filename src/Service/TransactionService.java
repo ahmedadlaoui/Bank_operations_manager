@@ -30,9 +30,15 @@ public class TransactionService {
 
         TransactionType type;
         switch (choice) {
-            case 1: type = TransactionType.DEPOSIT; break;
-            case 2: type = TransactionType.WITHDRAWAL; break;
-            case 3: type = TransactionType.TRANSFER; break;
+            case 1:
+                type = TransactionType.DEPOSIT;
+                break;
+            case 2:
+                type = TransactionType.WITHDRAWAL;
+                break;
+            case 3:
+                type = TransactionType.TRANSFER;
+                break;
             default:
                 System.out.println("Invalid choice.");
                 return;
@@ -150,8 +156,6 @@ public class TransactionService {
         }
         System.out.println("------------------------------");
     }
-
-
 
     private Account FindAccountByClientID(Client client, UUID accountId) {
         List<Account> clientAccounts = this.accountRepo.FindByClientID(client.getId());

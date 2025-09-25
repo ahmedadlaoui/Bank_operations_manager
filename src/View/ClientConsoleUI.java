@@ -52,6 +52,7 @@ public class ClientConsoleUI {
                     case 6:
                         break;
                     case 7:
+                        this.accountService.CalculateTotals(currentUser);
                         break;
                     case 0:
                         System.out.println("Logging out...");
