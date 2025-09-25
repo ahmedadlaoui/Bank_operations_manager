@@ -117,6 +117,42 @@ public class TransactionService {
         }
     }
 
+    public void DisplayTransactionHistory(User user) {
+        if (!(user instanceof Client)) {
+            System.out.println("⚠️ Only clients can have a transaction history.");
+            return;
+        }
+
+        Client client = (Client) user;
+        List<Transaction> transactions = this.transactionRepo.findByClientID(client.getId());
+
+        System.out.println();
+        System.out.println("=== Transaction History ===");
+
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found.");
+            return;
+        }
+
+        for (Transaction tx : transactions) {
+            System.out.println("------------------------------");
+            System.out.println("Transaction ID : " + tx.getId());
+            System.out.println("Type           : " + tx.getType());
+            System.out.println("Amount         : " + tx.getAmount());
+            System.out.println("Reason         : " + tx.getReason());
+            if (tx.getSourceAccount() != null) {
+                System.out.println("From Account   : " + tx.getSourceAccount().getId());
+            }
+            if (tx.getDestinationAccount() != null) {
+                System.out.println("To Account     : " + tx.getDestinationAccount().getId());
+            }
+            System.out.println("Date           : " + tx.getDate());
+        }
+        System.out.println("------------------------------");
+    }
+
+
+
     private Account FindAccountByClientID(Client client, UUID accountId) {
         List<Account> clientAccounts = this.accountRepo.FindByClientID(client.getId());
         for (Account account : clientAccounts) {

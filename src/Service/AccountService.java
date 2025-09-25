@@ -32,6 +32,7 @@ public class AccountService {
         System.out.println("New account has been successfully created.");
         System.out.println();
         System.out.println("=== Account Informations ===");
+
         System.out.println("Account ID   : " + NewAccount.getId());
         System.out.println("Account Type : " + NewAccount.getType());
         System.out.println("Balance      : " + NewAccount.getBalance());
@@ -48,13 +49,13 @@ public class AccountService {
             System.out.println();
             System.out.println("=== Your Accounts ===");
             for (Account account : ClientAccounts) {
+                System.out.println("------------------------------");
                 System.out.println("Account ID  : " + account.getId());
                 System.out.println("Type        : " + account.getType());
                 System.out.println("Balance     : " + account.getBalance());
-                System.out.println();
             }
         }
-
+        System.out.println("------------------------------");
     }
 
 }

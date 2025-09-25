@@ -14,6 +14,7 @@ public class ClientConsoleUI {
     private final AccountService accountService = new AccountService();
     private final TransactionService transactionService = new TransactionService();
 
+
     public void start(User currentUser) {
 
         while (currentUser != null) {
@@ -46,6 +47,7 @@ public class ClientConsoleUI {
                         this.transactionService.MakeTransaction(currentUser);
                         break;
                     case 5:
+                        this.transactionService.DisplayTransactionHistory(currentUser);
                         break;
                     case 6:
                         break;
