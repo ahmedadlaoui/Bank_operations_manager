@@ -2,21 +2,25 @@ package View;
 
 import Model.User;
 import java.util.Scanner;
+
+import Service.AccountService;
 import Service.ClientService;
 
 public class ClientConsoleUI {
     private final Scanner input = new Scanner(System.in);
     private final ClientService clientService = new ClientService();
+    private final AccountService accountService = new AccountService();
 
     public void start(User currentUser) {
 
         while (currentUser != null) {
             System.out.println("\n=== CLIENT SPACE ===");
             System.out.println("1. View personal information");
-            System.out.println("2. View accounts");
-            System.out.println("3. View transaction history");
-            System.out.println("4. Filter/sort transactions");
-            System.out.println("5. Calculate total balance/deposits/withdrawals");
+            System.out.println("2. Add account");
+            System.out.println("3. View accounts");
+            System.out.println("4. View transaction history");
+            System.out.println("5. Filter/sort transactions");
+            System.out.println("6. Calculate total balance/deposits/withdrawals");
             System.out.println("0. Logout");
             System.out.print("Choose an option: ");
 
@@ -29,16 +33,16 @@ public class ClientConsoleUI {
                         this.clientService.DisplayPersonalInformation(currentUser);
                         break;
                     case 2:
-                        System.out.println("You chose: View accounts");
+                        this.accountService.AddAccount(currentUser);
                         break;
                     case 3:
-                        System.out.println("You chose: View transaction history");
+                        this.accountService.DisplayAccountsByClientID(currentUser);
                         break;
                     case 4:
-                        System.out.println("You chose: Filter/sort transactions");
                         break;
                     case 5:
-                        System.out.println("You chose: Calculate total balance/deposits/withdrawals");
+                        break;
+                    case 6:
                         break;
                     case 0:
                         System.out.println("Logging out...");
