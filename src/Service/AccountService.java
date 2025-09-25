@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class AccountService {
     private final Scanner input = new Scanner(System.in);
-    private final InMemoryAccountRepository accountRepo = new InMemoryAccountRepository();
+    private final InMemoryAccountRepository accountRepo = InMemoryAccountRepository.getInstance();
 
     public void AddAccount(User user){
         Client client = (Client) user;

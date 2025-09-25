@@ -1,15 +1,18 @@
 package View;
 
 import Model.User;
+
 import java.util.Scanner;
 
 import Service.AccountService;
 import Service.ClientService;
+import Service.TransactionService;
 
 public class ClientConsoleUI {
     private final Scanner input = new Scanner(System.in);
     private final ClientService clientService = new ClientService();
     private final AccountService accountService = new AccountService();
+    private final TransactionService transactionService = new TransactionService();
 
     public void start(User currentUser) {
 
@@ -18,9 +21,10 @@ public class ClientConsoleUI {
             System.out.println("1. View personal information");
             System.out.println("2. Add account");
             System.out.println("3. View accounts");
-            System.out.println("4. View transaction history");
-            System.out.println("5. Filter/sort transactions");
-            System.out.println("6. Calculate total balance/deposits/withdrawals");
+            System.out.println("4. Make transaction");
+            System.out.println("5. View transaction history");
+            System.out.println("6. Filter/sort transactions");
+            System.out.println("7. Calculate total balance/deposits/withdrawals");
             System.out.println("0. Logout");
             System.out.print("Choose an option: ");
 
@@ -39,10 +43,13 @@ public class ClientConsoleUI {
                         this.accountService.DisplayAccountsByClientID(currentUser);
                         break;
                     case 4:
+                        this.transactionService.MakeTransaction(currentUser);
                         break;
                     case 5:
                         break;
                     case 6:
+                        break;
+                    case 7:
                         break;
                     case 0:
                         System.out.println("Logging out...");

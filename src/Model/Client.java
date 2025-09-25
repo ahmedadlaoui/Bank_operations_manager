@@ -10,20 +10,13 @@ public class Client extends User {
 
     public Client(String email, String firstName, String lastName, String password) {
         super("Client",email,firstName, lastName, password);
-        this.id = UUID.randomUUID();  // generate unique UUID automatically
+        this.id = UUID.randomUUID();
         this.accounts = new ArrayList<>();
     }
 
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
 
-    public List<Account> getAccounts() { return accounts; }
-
-    public void addAccount(Account account) {
-        if (account != null) {
-            this.accounts.add(account);
-        }
-    }
 
     @Override
     public String toString() {

@@ -1,29 +1,42 @@
 package Model;
-import Model.enums.TransactionType;
 
+import Model.enums.TransactionType;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class Transaction {
-    private String id;
+    private UUID id;
     private TransactionType type;
     private double amount;
     private LocalDateTime date;
     private String reason;
     private Account sourceAccount;
-    private Account destinationAccount; // optional for transfers
+    private Account destinationAccount;
 
-    public Transaction(String id, TransactionType type, double amount, LocalDateTime date,
-                       String reason, Account sourceAccount, Account destinationAccount) {
-        this.id = id;
+    // Constructor
+    public Transaction(TransactionType type, double amount, String reason,
+                       Account sourceAccount) {
+        this.id = UUID.randomUUID();
         this.type = type;
         this.amount = amount;
-        this.date = date;
+        this.date = LocalDateTime.now();
+        this.reason = reason;
+        this.sourceAccount = sourceAccount;
+    }
+
+    public Transaction(TransactionType type, double amount, String reason,
+                       Account sourceAccount, Account destinationAccount) {
+        this.id = UUID.randomUUID();
+        this.type = type;
+        this.amount = amount;
+        this.date = LocalDateTime.now();
         this.reason = reason;
         this.sourceAccount = sourceAccount;
         this.destinationAccount = destinationAccount;
     }
 
-    public String getId() { return id; }
+    // Getters
+    public UUID getId() { return id; }
     public TransactionType getType() { return type; }
     public double getAmount() { return amount; }
     public LocalDateTime getDate() { return date; }
@@ -34,8 +47,7 @@ public class Transaction {
     @Override
     public String toString() {
         String dest = destinationAccount != null ? ", to=" + destinationAccount.getId() : "";
-        return "Transaction{id='" + id + "', type=" + type + ", amount=" + amount + ", date=" + date + dest + "}";
+        return "Transaction{id='" + id + "', type=" + type + ", amount=" + amount +
+                ", date=" + date + dest + "}";
     }
 }
-
-
