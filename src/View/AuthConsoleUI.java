@@ -26,7 +26,7 @@ public class AuthConsoleUI {
             System.out.println("1 - Sign Up");
             System.out.println("2 - Sign In");
             System.out.println("3 - Exit");
-            System.out.print("Enter your choice: ");
+            System.out.print("Enter your choice : ");
 
             int choice;
             try {

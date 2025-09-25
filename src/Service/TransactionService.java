@@ -8,6 +8,7 @@ import Repository.imp.InMemoryTransactionRepository;
 import Repository.imp.InMemoryAccountRepository;
 import Model.enums.TransactionType;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
@@ -157,6 +158,74 @@ public class TransactionService {
         System.out.println("------------------------------");
     }
 
+
+    public void FilterOrSort(User user) {
+        if (!(user instanceof Client)) {
+            System.out.println("⚠️ Only clients can use this feature.");
+            return;
+        }
+
+        Client client = (Client) user;
+        List<Transaction> transactions = this.transactionRepo.findByClientID(client.getId());
+
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found.");
+            return;
+        }
+
+        while (true) {
+            System.out.println();
+            System.out.println("=== Filter / Sort Transactions ===");
+            System.out.println("1. Sort transactions by Amount");
+            System.out.println("2. Sort transactions by Date");
+            System.out.println("3. Filter by Type (Deposit / Withdrawal / Transfer)");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice : ");
+
+            int choice;
+            try {
+                choice = Integer.parseInt(input.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input.");
+                continue;
+            }
+
+            if (choice == 0) break;
+
+            switch (choice) {
+                case 1:
+                    transactions.sort(Comparator.comparingDouble(Transaction::getAmount));
+                    System.out.println("\n--- Transactions Sorted by Amount ---");
+                    DisplayTransactions(transactions);
+                    break;
+
+                case 2:
+                    transactions.sort(Comparator.comparing(Transaction::getDate));
+                    System.out.println("\n--- Transactions Sorted by Date ---");
+                    DisplayTransactions(transactions);
+                    break;
+
+                case 3:
+                    System.out.print("Enter type (DEPOSIT / WITHDRAWAL / TRANSFER): ");
+                    String typeInput = input.nextLine().toUpperCase();
+                    try {
+                        TransactionType filterType = TransactionType.valueOf(typeInput);
+                        List<Transaction> filtered = transactions.stream()
+                                .filter(t -> t.getType().equals(filterType))
+                                .toList();
+                        System.out.println("\n--- Transactions Filtered by " + filterType + " ---");
+                        DisplayTransactions(filtered);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Invalid type entered.");
+                    }
+                    break;
+
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
     private Account FindAccountByClientID(Client client, UUID accountId) {
         List<Account> clientAccounts = this.accountRepo.FindByClientID(client.getId());
         for (Account account : clientAccounts) {
@@ -169,5 +238,19 @@ public class TransactionService {
 
     private Account FindAccountByAccountID(UUID accountId) {
         return this.accountRepo.findById(accountId);
+    }
+    private void DisplayTransactions(List<Transaction> transactions) {
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found.");
+            return;
+        }
+        for (Transaction t : transactions) {
+            System.out.println("Transaction ID : " + t.getId());
+            System.out.println("Type           : " + t.getType());
+            System.out.println("Amount         : " + t.getAmount());
+            System.out.println("Reason         : " + t.getReason());
+            System.out.println("Date           : " + t.getDate());
+            System.out.println("-----------------------------");
+        }
     }
 }

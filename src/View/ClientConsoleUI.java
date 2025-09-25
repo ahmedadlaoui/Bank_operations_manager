@@ -50,6 +50,7 @@ public class ClientConsoleUI {
                         this.transactionService.DisplayTransactionHistory(currentUser);
                         break;
                     case 6:
+                        this.transactionService.FilterOrSort(currentUser);
                         break;
                     case 7:
                         this.accountService.CalculateTotals(currentUser);
