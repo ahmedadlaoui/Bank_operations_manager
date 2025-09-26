@@ -28,21 +28,15 @@ public class TransactionService {
 
         TransactionType type;
         switch (choice) {
-            case 1:
-                type = TransactionType.DEPOSIT;
-                break;
-            case 2:
-                type = TransactionType.WITHDRAWAL;
-                break;
-            case 3:
-                type = TransactionType.TRANSFER;
-                break;
-            default:
+            case 1 -> type = TransactionType.DEPOSIT;
+            case 2 -> type = TransactionType.WITHDRAWAL;
+            case 3 -> type = TransactionType.TRANSFER;
+            default -> {
                 System.out.println("Invalid choice.");
                 return;
+            }
         }
 
-        System.out.println();
         System.out.print("Enter the amount : ");
         double amount;
         try {
@@ -66,13 +60,12 @@ public class TransactionService {
             return;
         }
 
-        Account clientAccount = this.FindAccountByClientID(client, accountId);
+        Account clientAccount = findAccountByClientID(client, accountId);
         if (clientAccount == null) {
             System.out.println("Invalid account ID.");
             return;
         }
 
-        // Handle Deposit / Withdrawal
         if (type == TransactionType.DEPOSIT) {
             clientAccount.setBalance(clientAccount.getBalance() + amount);
             Transaction transaction = new Transaction(type, amount, reason, clientAccount);
@@ -99,7 +92,7 @@ public class TransactionService {
                 return;
             }
 
-            Account recipientAccount = this.FindAccountByAccountID(recipientAccountId);
+            Account recipientAccount = findAccountByAccountID(recipientAccountId);
             if (recipientAccount == null) {
                 System.out.println("Invalid recipient account ID.");
                 return;
@@ -121,48 +114,44 @@ public class TransactionService {
         }
     }
 
-    public void DisplayAllTransactions(){
-        List<Transaction> AllTransactions = this.transactionRepo.findAll();
-        if(AllTransactions.isEmpty()){
+    public void DisplayAllTransactions() {
+        List<Transaction> allTransactions = transactionRepo.findAll();
+        if (allTransactions.isEmpty()) {
             System.out.println("No transactions found.");
             return;
         }
-        LoopAndPrintTransactions(AllTransactions);
+        loopAndPrintTransactions(allTransactions);
     }
 
-    private void LoopAndPrintTransactions(List<Transaction> allTransactions) {
-        for (Transaction tx : allTransactions) {
+    private void loopAndPrintTransactions(List<Transaction> transactions) {
+        for (Transaction tx : transactions) {
             System.out.println("------------------------------");
-            System.out.println("Transaction ID : " + tx.getId());
-            System.out.println("Type           : " + tx.getType());
-            System.out.println("Amount         : " + tx.getAmount());
-            System.out.println("Reason         : " + tx.getReason());
-            if (tx.getSourceAccount() != null) {
-                System.out.println("From Account   : " + tx.getSourceAccount().getId());
-            }
-            if (tx.getDestinationAccount() != null) {
-                System.out.println("To Account     : " + tx.getDestinationAccount().getId());
-            }
-            System.out.println("Date           : " + tx.getDate());
+            System.out.println("Transaction ID   : " + tx.getId());
+            System.out.println("Type             : " + tx.getType());
+            System.out.println("Amount           : " + tx.getAmount());
+            System.out.println("Reason           : " + tx.getReason());
+            if (tx.getSourceAccount() != null)
+                System.out.println("From Account     : " + tx.getSourceAccount().getId());
+            if (tx.getDestinationAccount() != null)
+                System.out.println("To Account       : " + tx.getDestinationAccount().getId());
+            System.out.println("Date             : " + tx.getDate());
         }
         System.out.println("------------------------------");
     }
+
     public void FilterClientTransactions() {
-        // Ask for transaction type
         System.out.println("\n=== Filter Client Transactions ===");
         System.out.print("Enter transaction type (Deposit, Withdrawal, Transfer): ");
         String typeInput = input.nextLine().trim().toUpperCase();
 
-        // Validate type
         TransactionType selectedType;
         try {
-            selectedType = TransactionType.valueOf(typeInput); // Convert to ENUM
+            selectedType = TransactionType.valueOf(typeInput);
         } catch (IllegalArgumentException e) {
-            System.out.println("❌ Invalid transaction type. Please enter Deposit, Withdrawal, or Transfer.");
+            System.out.println("❌ Invalid transaction type.");
             return;
         }
 
-        // Ask for client ID
         System.out.print("Enter the Client ID: ");
         UUID clientId;
         try {
@@ -172,42 +161,47 @@ public class TransactionService {
             return;
         }
 
-        // Find all transactions for that client
-        List<Transaction> clientTransactions = this.transactionRepo.findByClientID(clientId);
-
+        List<Transaction> clientTransactions = transactionRepo.findByClientID(clientId);
         if (clientTransactions.isEmpty()) {
             System.out.println("\n⚠️ No transactions found for this client.");
             return;
         }
 
-        // Filter by type
-        List<Transaction> filteredTransactions = this.transactionRepo.FilterByType(selectedType);
+        List<Transaction> filteredTransactions = clientTransactions.stream()
+                .filter(t -> t.getType() == selectedType)
+                .toList();
 
         if (filteredTransactions.isEmpty()) {
             System.out.println("\n⚠️ No transactions of type " + selectedType + " found for this client.");
             return;
         }
 
-        // Display filtered transactions
         System.out.println("\n=== Filtered Transactions ===");
-        LoopAndDisplayFilteredTransactions(filteredTransactions);
+        displayTransactions(filteredTransactions);
     }
 
-    static void LoopAndDisplayFilteredTransactions(List<Transaction> filteredTransactions) {
-        for (Transaction transaction : filteredTransactions) {
-            System.out.println();
-            System.out.println("Transaction ID   : " + transaction.getId());
-            System.out.println("Type             : " + transaction.getType());
-            System.out.println("Amount           : " + transaction.getAmount());
-            System.out.println("Date             : " + transaction.getDate());
-            System.out.println("Reason           : " + transaction.getReason());
-            System.out.println("Source Account   : " + transaction.getSourceAccount().getId());
-            if (transaction.getDestinationAccount() != null) {
-                System.out.println("Destination Account: " + transaction.getDestinationAccount().getId());
+    public void IdentifySuspiciousTransactions() {
+        System.out.print("Enter suspicious amount: ");
+        double amount;
+        try {
+            amount = Double.parseDouble(input.nextLine().trim());
+            if (amount <= 0) {
+                System.out.println("Amount must be positive.");
+                return;
             }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input.");
+            return;
         }
-    }
 
+        List<Transaction> suspiciousTransactions = transactionRepo.GetSuspiciousTransactions(amount);
+        if (suspiciousTransactions.isEmpty()) {
+            System.out.println("No suspicious transactions found.");
+            return;
+        }
+        System.out.println("\n=== Suspicious transactions ===");
+        displayTransactions(suspiciousTransactions);
+    }
 
     public void DisplayTransactionHistory(User user) {
         if (!(user instanceof Client)) {
@@ -216,19 +210,16 @@ public class TransactionService {
         }
 
         Client client = (Client) user;
-        List<Transaction> transactions = this.transactionRepo.findByClientID(client.getId());
+        List<Transaction> transactions = transactionRepo.findByClientID(client.getId());
 
-        System.out.println();
-        System.out.println("=== Transaction History ===");
-
+        System.out.println("\n=== Transaction History ===");
         if (transactions.isEmpty()) {
             System.out.println("No transactions found.");
             return;
         }
 
-        LoopAndPrintTransactions(transactions);
+        loopAndPrintTransactions(transactions);
     }
-
 
     public void FilterOrSort(User user) {
         if (!(user instanceof Client)) {
@@ -237,21 +228,19 @@ public class TransactionService {
         }
 
         Client client = (Client) user;
-        List<Transaction> transactions = this.transactionRepo.findByClientID(client.getId());
-
+        List<Transaction> transactions = transactionRepo.findByClientID(client.getId());
         if (transactions.isEmpty()) {
             System.out.println("No transactions found.");
             return;
         }
 
         while (true) {
-            System.out.println();
-            System.out.println("=== Filter / Sort Transactions ===");
-            System.out.println("1. Sort transactions by Amount");
-            System.out.println("2. Sort transactions by Date");
+            System.out.println("\n=== Filter / Sort Transactions ===");
+            System.out.println("1. Sort by Amount");
+            System.out.println("2. Sort by Date");
             System.out.println("3. Filter by Type (Deposit / Withdrawal / Transfer)");
             System.out.println("0. Exit");
-            System.out.print("Enter your choice : ");
+            System.out.print("Enter your choice: ");
 
             int choice;
             try {
@@ -264,64 +253,61 @@ public class TransactionService {
             if (choice == 0) break;
 
             switch (choice) {
-                case 1:
+                case 1 -> {
                     transactions.sort(Comparator.comparingDouble(Transaction::getAmount));
                     System.out.println("\n--- Transactions Sorted by Amount ---");
-                    DisplayTransactions(transactions);
-                    break;
-
-                case 2:
+                    displayTransactions(transactions);
+                }
+                case 2 -> {
                     transactions.sort(Comparator.comparing(Transaction::getDate));
                     System.out.println("\n--- Transactions Sorted by Date ---");
-                    DisplayTransactions(transactions);
-                    break;
-
-                case 3:
+                    displayTransactions(transactions);
+                }
+                case 3 -> {
                     System.out.print("Enter type (DEPOSIT / WITHDRAWAL / TRANSFER): ");
                     String typeInput = input.nextLine().toUpperCase();
                     try {
                         TransactionType filterType = TransactionType.valueOf(typeInput);
                         List<Transaction> filtered = transactions.stream()
-                                .filter(t -> t.getType().equals(filterType))
+                                .filter(t -> t.getType() == filterType)
                                 .toList();
                         System.out.println("\n--- Transactions Filtered by " + filterType + " ---");
-                        DisplayTransactions(filtered);
+                        displayTransactions(filtered);
                     } catch (IllegalArgumentException e) {
                         System.out.println("Invalid type entered.");
                     }
-                    break;
-
-                default:
-                    System.out.println("Invalid choice.");
+                }
+                default -> System.out.println("Invalid choice.");
             }
         }
     }
 
-    private Account FindAccountByClientID(Client client, UUID accountId) {
-        List<Account> clientAccounts = this.accountRepo.FindByClientID(client.getId());
-        for (Account account : clientAccounts) {
-            if (account.getId().equals(accountId)) {
-                return account;
-            }
-        }
-        return null;
+    private Account findAccountByClientID(Client client, UUID accountId) {
+        return accountRepo.FindByClientID(client.getId()).stream()
+                .filter(a -> a.getId().equals(accountId))
+                .findFirst().orElse(null);
     }
 
-    private Account FindAccountByAccountID(UUID accountId) {
-        return this.accountRepo.findById(accountId);
+    private Account findAccountByAccountID(UUID accountId) {
+        return accountRepo.findById(accountId);
     }
-    private void DisplayTransactions(List<Transaction> transactions) {
+
+    private void displayTransactions(List<Transaction> transactions) {
         if (transactions.isEmpty()) {
             System.out.println("No transactions found.");
             return;
         }
         for (Transaction t : transactions) {
-            System.out.println("Transaction ID : " + t.getId());
-            System.out.println("Type           : " + t.getType());
-            System.out.println("Amount         : " + t.getAmount());
-            System.out.println("Reason         : " + t.getReason());
-            System.out.println("Date           : " + t.getDate());
-            System.out.println("-----------------------------");
+            System.out.println();
+            System.out.println("Transaction ID     : " + t.getId());
+            System.out.println("Type               : " + t.getType());
+            System.out.println("Amount             : " + t.getAmount());
+            System.out.println("Reason             : " + t.getReason());
+            System.out.println("Date               : " + t.getDate());
+            System.out.println("Source Account     : " + t.getSourceAccount().getId());
+            if (t.getDestinationAccount() != null)
+                System.out.println("Destination Account: " + t.getDestinationAccount().getId());
+            System.out.println("-------------------------------");
         }
     }
 }

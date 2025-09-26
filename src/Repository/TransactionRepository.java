@@ -12,4 +12,5 @@ public interface TransactionRepository {
     public List<Transaction> findByClientID(Client client);
     public List<Transaction> findAll();
     public List<Transaction> FilterByType(TransactionType TransactionType);
+    public List<Transaction> GetSuspiciousTransactions(Double amount);
 }

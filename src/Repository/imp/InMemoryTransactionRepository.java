@@ -38,9 +38,11 @@ public class InMemoryTransactionRepository {
         }
         return transactionsByClientID;
     }
+
     public List<Transaction> findAll() {
         return this.transactions;
     }
+
     public List<Transaction> FilterByType(TransactionType transactionType) {
         ArrayList<Transaction> transactionsByTransactionType = new ArrayList<>();
         for (Transaction transaction : this.transactions) {
@@ -49,5 +51,11 @@ public class InMemoryTransactionRepository {
             }
         }
         return transactionsByTransactionType;
+    }
+
+    public List<Transaction> GetSuspiciousTransactions(Double amount) {
+        return this.transactions.stream()
+                .filter(t -> t.getAmount() >= amount)
+                .toList();
     }
 }

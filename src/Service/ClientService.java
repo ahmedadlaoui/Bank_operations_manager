@@ -1,4 +1,5 @@
 package Service;
+
 import Model.Account;
 import Model.Client;
 import Model.Transaction;
@@ -16,7 +17,7 @@ public class ClientService {
     private final InMemoryTransactionRepository transactionRepo = InMemoryTransactionRepository.getInstance();
     private final InMemoryAccountRepository accountRepo = InMemoryAccountRepository.getInstance();
 
-    public void DisplayPersonalInformation(User user){
+    public void DisplayPersonalInformation(User user) {
 
         System.out.println();
         System.out.println("=== Personal Information ===");
@@ -70,7 +71,19 @@ public class ClientService {
             System.out.println("\nNo transactions found for this client.");
         } else {
             System.out.println("\n=== Transactions ===");
-            TransactionService.LoopAndDisplayFilteredTransactions(clientTransactions);
+            for (Transaction t : clientTransactions) {
+                System.out.println();
+                System.out.println("Transaction ID     : " + t.getId());
+                System.out.println("Type               : " + t.getType());
+                System.out.println("Amount             : " + t.getAmount());
+                System.out.println("Reason             : " + t.getReason());
+                System.out.println("Date               : " + t.getDate());
+                System.out.println("Source Account     : " + t.getSourceAccount().getId());
+                if (t.getDestinationAccount() != null)
+                    System.out.println("Destination Account: " + t.getDestinationAccount().getId());
+                System.out.println("-------------------------------");
+            }
+
         }
     }
 

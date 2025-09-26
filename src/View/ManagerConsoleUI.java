@@ -60,6 +60,7 @@ public class ManagerConsoleUI {
                     break;
 
                 case 5:
+                    this.transactionService.IdentifySuspiciousTransactions();
                     break;
 
                 case 0:
