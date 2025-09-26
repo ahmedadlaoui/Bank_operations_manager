@@ -8,7 +8,7 @@ import Repository.imp.InMemoryClientRepository;
 
 public class AuthService {
     private final UserFactory userFactory;
-    private final ClientRepository userRepository = new InMemoryClientRepository();
+    private final ClientRepository userRepository = InMemoryClientRepository.getInstance();
     private final PasswordValidator passwordValidator;
 
     public AuthService() {

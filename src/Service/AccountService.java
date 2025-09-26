@@ -96,4 +96,21 @@ public class AccountService {
         System.out.println("Grand Total Across All Accounts: " + grandTotal);
     }
 
+    public void DisplayAllAccounts(){
+
+        List<Account> AllAccounts = this.accountRepo.findAll();
+        if (AllAccounts.isEmpty()) {
+            System.out.println("No account found.");
+        } else {
+            System.out.println();
+            System.out.println("=== All Accounts ===");
+            for (Account account : AllAccounts) {
+                System.out.println("------------------------------");
+                System.out.println("Account ID  : " + account.getId());
+                System.out.println("Type        : " + account.getType());
+                System.out.println("Balance     : " + account.getBalance());
+            }
+        }
+        System.out.println("------------------------------");
+    }
 }

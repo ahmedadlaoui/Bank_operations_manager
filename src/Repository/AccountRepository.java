@@ -9,4 +9,5 @@ public interface AccountRepository {
     public void Save(Account account);
     public List<Account> FindByClientID(UUID ClientID);
     public Account findById(UUID AccountID);
+    public List<Account> findAll();
 }

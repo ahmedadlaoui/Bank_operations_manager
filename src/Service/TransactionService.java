@@ -14,7 +14,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class TransactionService {
-    private final InMemoryTransactionRepository transactionRepo = new InMemoryTransactionRepository();
+    private final InMemoryTransactionRepository transactionRepo = InMemoryTransactionRepository.getInstance();
     private final InMemoryAccountRepository accountRepo = InMemoryAccountRepository.getInstance();
     private final Scanner input = new Scanner(System.in);
 

@@ -42,4 +42,7 @@ public class InMemoryAccountRepository {
         }
         return null;
     }
+    public List<Account> findAll() {
+        return this.accounts;
+    }
 }

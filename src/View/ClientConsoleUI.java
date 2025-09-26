@@ -10,10 +10,14 @@ import Service.TransactionService;
 
 public class ClientConsoleUI {
     private final Scanner input = new Scanner(System.in);
-    private final ClientService clientService = new ClientService();
-    private final AccountService accountService = new AccountService();
-    private final TransactionService transactionService = new TransactionService();
-
+    private final ClientService clientService ;
+    private final AccountService accountService ;
+    private final TransactionService transactionService ;
+    public ClientConsoleUI(ClientService clientService,AccountService accountService,TransactionService transactionService) {
+        this.clientService = clientService;
+        this.accountService = accountService;
+        this.transactionService = transactionService;
+    }
 
     public void start(User currentUser) {
 
@@ -60,7 +64,7 @@ public class ClientConsoleUI {
                         currentUser = null;
                         break;
                     default:
-                        System.out.println("Invalid choice. Please enter a number from 0 to 5.");
+                        System.out.println("Invalid choice.");
                 }
 
             } catch (NumberFormatException e) {

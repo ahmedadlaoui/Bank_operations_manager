@@ -3,7 +3,10 @@ package View;
 import java.util.Scanner;
 
 import Model.User;
+import Service.AccountService;
 import Service.AuthService;
+import Service.ClientService;
+import Service.TransactionService;
 import View.ClientConsoleUI;
 import View.ManagerConsoleUI;
 
@@ -14,8 +17,11 @@ public class AuthConsoleUI {
     private final ClientConsoleUI clientConsoleUI;
 
     public AuthConsoleUI() {
-        this.clientConsoleUI = new ClientConsoleUI();
-        this.managerConsoleUI = new ManagerConsoleUI();
+        TransactionService transactionService = new TransactionService();
+        AccountService accountService = new AccountService();
+        ClientService clientService = new ClientService();
+        this.clientConsoleUI = new ClientConsoleUI(clientService, accountService, transactionService);
+        this.managerConsoleUI = new ManagerConsoleUI(clientService, accountService, transactionService);
         this.input = new Scanner(System.in);
         this.authService = new AuthService();
     }

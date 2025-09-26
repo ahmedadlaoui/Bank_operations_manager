@@ -7,20 +7,34 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class InMemoryTransactionRepository {
-    private ArrayList<Transaction> transactions = new ArrayList<>();
+
+    private static InMemoryTransactionRepository instance; // Singleton instance
+    private final ArrayList<Transaction> transactions;
+
+    // Private constructor
+    private InMemoryTransactionRepository() {
+        this.transactions = new ArrayList<>();
+    }
+
+    // Public method to get the singleton instance
+    public static InMemoryTransactionRepository getInstance() {
+        if (instance == null) {
+            instance = new InMemoryTransactionRepository();
+        }
+        return instance;
+    }
 
     public void Save(Transaction transaction) {
         this.transactions.add(transaction);
     }
 
-    public List<Transaction> findByClientID(UUID ClientID) {
+    public List<Transaction> findByClientID(UUID clientID) {
         ArrayList<Transaction> transactionsByClientID = new ArrayList<>();
         for (Transaction transaction : this.transactions) {
-            if (transaction.getSourceAccount().getClient().getId().equals(ClientID)) {
+            if (transaction.getSourceAccount().getClient().getId().equals(clientID)) {
                 transactionsByClientID.add(transaction);
             }
         }
         return transactionsByClientID;
     }
-
 }
