@@ -1,6 +1,7 @@
 package Repository.imp;
 
 import Model.Transaction;
+import Model.enums.TransactionType;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -39,5 +40,14 @@ public class InMemoryTransactionRepository {
     }
     public List<Transaction> findAll() {
         return this.transactions;
+    }
+    public List<Transaction> FilterByType(TransactionType transactionType) {
+        ArrayList<Transaction> transactionsByTransactionType = new ArrayList<>();
+        for (Transaction transaction : this.transactions) {
+            if (transaction.getType().equals(transactionType)) {
+                transactionsByTransactionType.add(transaction);
+            }
+        }
+        return transactionsByTransactionType;
     }
 }

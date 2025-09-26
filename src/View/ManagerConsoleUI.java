@@ -29,7 +29,7 @@ public class ManagerConsoleUI {
             System.out.println("1. List Client banking informations");
             System.out.println("2. List all accounts");
             System.out.println("3. List all transactions");
-            System.out.println("4. View & filter a client’s transactions");
+            System.out.println("4. filter a client’s transactions by type");
             System.out.println("5. Identify suspicious transactions");
             System.out.println("0. Logout");
             System.out.print("Choose an option: ");
@@ -56,6 +56,7 @@ public class ManagerConsoleUI {
                     break;
 
                 case 4:
+                    this.transactionService.FilterClientTransactions();
                     break;
 
                 case 5:

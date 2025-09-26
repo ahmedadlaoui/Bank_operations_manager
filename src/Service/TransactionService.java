@@ -8,10 +8,7 @@ import Repository.imp.InMemoryTransactionRepository;
 import Repository.imp.InMemoryAccountRepository;
 import Model.enums.TransactionType;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class TransactionService {
     private final InMemoryTransactionRepository transactionRepo = InMemoryTransactionRepository.getInstance();
@@ -150,6 +147,67 @@ public class TransactionService {
         }
         System.out.println("------------------------------");
     }
+    public void FilterClientTransactions() {
+        // Ask for transaction type
+        System.out.println("\n=== Filter Client Transactions ===");
+        System.out.print("Enter transaction type (Deposit, Withdrawal, Transfer): ");
+        String typeInput = input.nextLine().trim().toUpperCase();
+
+        // Validate type
+        TransactionType selectedType;
+        try {
+            selectedType = TransactionType.valueOf(typeInput); // Convert to ENUM
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ Invalid transaction type. Please enter Deposit, Withdrawal, or Transfer.");
+            return;
+        }
+
+        // Ask for client ID
+        System.out.print("Enter the Client ID: ");
+        UUID clientId;
+        try {
+            clientId = UUID.fromString(input.nextLine().trim());
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ Invalid Client ID format.");
+            return;
+        }
+
+        // Find all transactions for that client
+        List<Transaction> clientTransactions = this.transactionRepo.findByClientID(clientId);
+
+        if (clientTransactions.isEmpty()) {
+            System.out.println("\n⚠️ No transactions found for this client.");
+            return;
+        }
+
+        // Filter by type
+        List<Transaction> filteredTransactions = this.transactionRepo.FilterByType(selectedType);
+
+        if (filteredTransactions.isEmpty()) {
+            System.out.println("\n⚠️ No transactions of type " + selectedType + " found for this client.");
+            return;
+        }
+
+        // Display filtered transactions
+        System.out.println("\n=== Filtered Transactions ===");
+        LoopAndDisplayFilteredTransactions(filteredTransactions);
+    }
+
+    static void LoopAndDisplayFilteredTransactions(List<Transaction> filteredTransactions) {
+        for (Transaction transaction : filteredTransactions) {
+            System.out.println();
+            System.out.println("Transaction ID   : " + transaction.getId());
+            System.out.println("Type             : " + transaction.getType());
+            System.out.println("Amount           : " + transaction.getAmount());
+            System.out.println("Date             : " + transaction.getDate());
+            System.out.println("Reason           : " + transaction.getReason());
+            System.out.println("Source Account   : " + transaction.getSourceAccount().getId());
+            if (transaction.getDestinationAccount() != null) {
+                System.out.println("Destination Account: " + transaction.getDestinationAccount().getId());
+            }
+        }
+    }
+
 
     public void DisplayTransactionHistory(User user) {
         if (!(user instanceof Client)) {

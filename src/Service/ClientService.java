@@ -70,18 +70,7 @@ public class ClientService {
             System.out.println("\nNo transactions found for this client.");
         } else {
             System.out.println("\n=== Transactions ===");
-            for (Transaction transaction : clientTransactions) {
-                System.out.println();
-                System.out.println("Transaction ID   : " + transaction.getId());
-                System.out.println("Type             : " + transaction.getType());
-                System.out.println("Amount           : " + transaction.getAmount());
-                System.out.println("Date             : " + transaction.getDate());
-                System.out.println("Reason           : " + transaction.getReason());
-                System.out.println("Source Account   : " + transaction.getSourceAccount().getId());
-                if (transaction.getDestinationAccount() != null) {
-                    System.out.println("Destination Account: " + transaction.getDestinationAccount().getId());
-                }
-            }
+            TransactionService.LoopAndDisplayFilteredTransactions(clientTransactions);
         }
     }
 
