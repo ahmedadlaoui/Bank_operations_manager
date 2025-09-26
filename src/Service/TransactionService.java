@@ -124,6 +124,33 @@ public class TransactionService {
         }
     }
 
+    public void DisplayAllTransactions(){
+        List<Transaction> AllTransactions = this.transactionRepo.findAll();
+        if(AllTransactions.isEmpty()){
+            System.out.println("No transactions found.");
+            return;
+        }
+        LoopAndPrintTransactions(AllTransactions);
+    }
+
+    private void LoopAndPrintTransactions(List<Transaction> allTransactions) {
+        for (Transaction tx : allTransactions) {
+            System.out.println("------------------------------");
+            System.out.println("Transaction ID : " + tx.getId());
+            System.out.println("Type           : " + tx.getType());
+            System.out.println("Amount         : " + tx.getAmount());
+            System.out.println("Reason         : " + tx.getReason());
+            if (tx.getSourceAccount() != null) {
+                System.out.println("From Account   : " + tx.getSourceAccount().getId());
+            }
+            if (tx.getDestinationAccount() != null) {
+                System.out.println("To Account     : " + tx.getDestinationAccount().getId());
+            }
+            System.out.println("Date           : " + tx.getDate());
+        }
+        System.out.println("------------------------------");
+    }
+
     public void DisplayTransactionHistory(User user) {
         if (!(user instanceof Client)) {
             System.out.println("⚠️ Only clients can have a transaction history.");
@@ -141,21 +168,7 @@ public class TransactionService {
             return;
         }
 
-        for (Transaction tx : transactions) {
-            System.out.println("------------------------------");
-            System.out.println("Transaction ID : " + tx.getId());
-            System.out.println("Type           : " + tx.getType());
-            System.out.println("Amount         : " + tx.getAmount());
-            System.out.println("Reason         : " + tx.getReason());
-            if (tx.getSourceAccount() != null) {
-                System.out.println("From Account   : " + tx.getSourceAccount().getId());
-            }
-            if (tx.getDestinationAccount() != null) {
-                System.out.println("To Account     : " + tx.getDestinationAccount().getId());
-            }
-            System.out.println("Date           : " + tx.getDate());
-        }
-        System.out.println("------------------------------");
+        LoopAndPrintTransactions(transactions);
     }
 
 

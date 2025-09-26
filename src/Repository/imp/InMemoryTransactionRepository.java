@@ -37,4 +37,7 @@ public class InMemoryTransactionRepository {
         }
         return transactionsByClientID;
     }
+    public List<Transaction> findAll() {
+        return this.transactions;
+    }
 }

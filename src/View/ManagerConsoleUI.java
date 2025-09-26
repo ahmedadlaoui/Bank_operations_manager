@@ -52,6 +52,7 @@ public class ManagerConsoleUI {
                     break;
 
                 case 3:
+                    this.transactionService.DisplayAllTransactions();
                     break;
 
                 case 4:
